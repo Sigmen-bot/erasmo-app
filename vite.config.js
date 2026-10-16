@@ -7,5 +7,6 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base: '/ERASMO/',
+  // Strona stoi w katalogu głównym domeny (Netlify). Dla GitHub Pages trzeba by ustawić '/<nazwa-repo>/'.
+  base: '/',
 })

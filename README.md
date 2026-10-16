@@ -1,16 +1,17 @@
-# React + Vite
+# Erasmo – aplikacja studenta
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Student wybiera kierunek UEK i semestr wyjazdu, a aplikacja pokazuje:
+- **ranking uczelni partnerskich** według dopasowania przedmiotów do jego planu studiów,
+- **Learning Agreement** dla wybranej uczelni: przedmiot UEK ↔ najlepszy przedmiot zagraniczny (dobór 1:1).
 
-Currently, two official plugins are available:
+Dane (sylabusy i oceny dopasowań) przygotowuje panel admina i worker AI w repozytorium `erasmo-admin`.
+Ta aplikacja tylko je czyta – przez publiczne widoki `student_*` w Supabase (migracja 14 w erasmo-admin).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Uruchomienie lokalne
+1. Skopiuj `.env.example` jako `.env` i wpisz adres oraz **publiczny** klucz (anon / publishable) bazy.
+2. `npm install`
+3. `npm run dev` → http://localhost:5173/
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Publikacja
+Netlify (ustawienia w `netlify.toml`): build `npm run build`, katalog `dist`,
+zmienne środowiskowe `VITE_SUPABASE_URL` i `VITE_SUPABASE_ANON_KEY`.

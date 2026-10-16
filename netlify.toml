@@ -1,0 +1,12 @@
+# Netlify: aplikacja studenta Erasmo
+# Zmienne VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY ustaw w Netlify: Site configuration → Environment variables.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Aplikacja ma własne podstrony (/wyniki, /sylabusy) – każdy adres serwujemy przez index.html,
+# żeby odświeżenie podstrony nie kończyło się błędem 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
