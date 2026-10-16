@@ -1,14 +1,27 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 // IMPORTUJEMY NASZE GOTOWE KOMPONENTY
 import SearchPage from './SearchPage';
 import GoErasmusPage from './GoErasmusPage';
-import tloGora from '../assets/grafika1.svg';
+import tloGora from '../assets/Grafika1.svg';
+import { fetchStats } from '../lib/data';
+
+// Liczby na stronę główną – prawdziwe, z bazy (public_stats)
+function useStats() {
+  const [stats, setStats] = useState(null);
+  useEffect(() => {
+    fetchStats().then(setStats).catch(() => setStats(null));
+  }, []);
+  return stats;
+}
+
+const fmt = (n) => (typeof n === 'number' ? n.toLocaleString('pl-PL') : '–');
 
 const noiseTexture = "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")";
 
 export default function HomePage() {
   const formularzRef = useRef(null);
   const [tryb, setTryb] = useState('szukaj'); // domyślnie lewy przycisk
+  const stats = useStats();
 
   // Magia płynnego przewijania
   const zmienTrybIScrolluj = (nowyTryb) => {
@@ -54,8 +67,10 @@ export default function HomePage() {
             Jestem już zakwalifikowany/a
           </button>
         </div>
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">
-          Dołącz do 1000+ studentów, którzy uprościli swój learning agreement
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8 text-center">
+          {stats
+            ? `${fmt(stats.matches)} propozycji dopasowań przedmiotów z ${fmt(stats.universities)} uczelni partnerskich`
+            : 'Dopasowania przedmiotów do Twojego Learning Agreement'}
         </p>
       </section>
 
@@ -81,22 +96,17 @@ export default function HomePage() {
       {/* 3. PRZYWRÓCONA SEKCJA STATYSTYK */}
       <section className="w-full border-t border-b border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-12 py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="flex flex-col gap-2">
-            <span className="text-5xl font-black text-[#a420eb]">100+</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">Zaktualizowanych<br/>sylabusów</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-5xl font-black text-[#a420eb]">1000+</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">Dopasowań</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-5xl font-black text-[#a420eb]">10+</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">Kierunków studiów</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            <span className="text-5xl font-black text-[#a420eb]">50+</span>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">Krajów</span>
-          </div>
+          {[
+            ['syllabi', 'Zatwierdzonych', 'sylabusów'],
+            ['matches', 'Propozycji', 'dopasowań'],
+            ['universities', 'Uczelni', 'partnerskich'],
+            ['programmes', 'Kierunków', 'studiów UEK'],
+          ].map(([key, line1, line2]) => (
+            <div key={key} className="flex flex-col gap-2">
+              <span className="text-5xl font-black text-[#a420eb]">{fmt(stats?.[key])}</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">{line1}<br/>{line2}</span>
+            </div>
+          ))}
         </div>
       </section>
 
